@@ -10,7 +10,7 @@
 .cell {
   border: 1px solid var(--color-outline);
   border-width: 1px 0 0;
-  padding: var(--space-small) var(--space-small);
+  padding: var(--space-xxsmall) var(--space-small);
   text-align: left;
 }
 
@@ -46,7 +46,7 @@
 }
 
 .root tbody tr:hover .cell {
-  background-color: var(--color-highlight-warning);
+  __background-color: var(--color-highlight-warning);
 }
 
 .emptyData {

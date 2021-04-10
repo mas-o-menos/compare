@@ -34,11 +34,17 @@
 
 .current {
   border-left-color: transparent;
+  padding-right: var(--space-xxxsmall);
+}
+
+.deltaCol {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: left;
 }
 
 .delta {
-  padding-left: var(--space-xsmall);
-  text-align: right;
+  font-size: var(--size-xsmall);
 }
 
 .multipleRuns .unchanged td {

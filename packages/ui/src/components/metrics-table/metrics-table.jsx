@@ -31,22 +31,30 @@ const getHeaderCell = (items, showHeaderSum) => (run, index, runs) => {
     </JobName>
   );
 
-  return {
-    children: showHeaderSum ? (
-      <div className={styles.tableHeaderRun}>
-        {jobName}
-        <RunLabelSum
-          className={styles.tableHeaderRunMetric}
-          runIndex={index}
-          runCount={runs.length}
-          rows={items}
-        />
-      </div>
-    ) : (
-      jobName
-    ),
-    className,
-  };
+  return [
+    {
+      children: showHeaderSum ? (
+        <div className={styles.tableHeaderRun}>
+          {jobName}
+          <RunLabelSum
+            className={styles.tableHeaderRunMetric}
+            runIndex={index}
+            runCount={runs.length}
+            rows={items}
+          />
+        </div>
+      ) : (
+        jobName
+      ),
+      className,
+    },
+    ...index < runs.length - 1 ? [
+      {
+        children: ' ',
+        className: styles.deltaCol
+      }
+    ] : [],
+  ];
 };
 
 const getHeaders = (runs, items, showHeaderSum, title) => [
@@ -57,24 +65,24 @@ const getHeaders = (runs, items, showHeaderSum, title) => [
   },
 
   // Runs
-  ...runs.map(getHeaderCell(items, showHeaderSum)),
+  ...runs.map(getHeaderCell(items, showHeaderSum)).flat(),
 ];
 
-const generateRowCell = () => (item) => {
-  // eslint-disable-next-line react/destructuring-assignment
+const generateRowCell = (item) => {
   if (!item || typeof item.value === 'undefined') {
     return '-';
   }
 
   const { displayValue, deltaPercentage, displayDeltaPercentage, deltaType } = item;
 
-  return (
-    <Metric value={displayValue} anchored>
-      {typeof deltaPercentage === 'number' && (
-        <Delta displayValue={displayDeltaPercentage} deltaType={deltaType} />
-      )}
-    </Metric>
-  );
+  if (typeof deltaPercentage === 'number') {
+    return [
+      <Metric value={displayValue} />,
+      <Delta displayValue={displayDeltaPercentage} deltaType={deltaType} className={styles.delta} />
+    ];
+  }
+
+  return <Metric value={displayValue} />;
 };
 
 const getRows = (runs, items, renderRowHeader) =>
@@ -89,7 +97,7 @@ const getRows = (runs, items, renderRowHeader) =>
         renderRowHeader(item),
 
         // Metric item values
-        ...item.runs.map(generateRowCell()),
+        ...item.runs.map(generateRowCell).flat(),
       ],
     };
   });

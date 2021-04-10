@@ -21,7 +21,7 @@ const getColumnAttributes = (headerRows, hasRowHeader, cellId) => {
   return typeof header === 'object' ? omit(header, ['children']) : {};
 };
 
-const Tr = (props) => {
+export const Tr = (props) => {
   const { className, ...restProps } = props;
   return <tr className={cx(css.row, className)} {...restProps} />;
 };
@@ -35,7 +35,7 @@ Tr.propTypes = {
   className: PropTypes.string,
 };
 
-const Th = (props) => {
+export const Th = (props) => {
   const { className, ...restProps } = props;
 
   return <th className={cx(css.cell, className)} {...restProps} />;
@@ -50,7 +50,7 @@ Th.propTypes = {
   className: PropTypes.string,
 };
 
-const Td = (props) => {
+export const Td = (props) => {
   const { className, ...restProps } = props;
   return <td className={cx(css.cell, className)} {...restProps} />;
 };
@@ -75,60 +75,78 @@ const renderHeaderTh = (header, index) => {
   return <Th {...headerProps} />;
 };
 
-export const Table = ({ className, emptyMessage, outline, headers, rows }) => (
-  <table className={cx(className, css.root, outline && css.outline)}>
-    {headers?.length > 0 && (
-      <thead>
-        {Array.isArray(headers[0]) ? (
-          <>
-            {headers.map((header, index) => {
-              const key = `header-row-${index}`;
-              return (
-                <Tr key={key}>{header.map(renderHeaderTh)}</Tr>
-              );
-            })}
-          </>
-        ) : (
-          <Tr key="header-row">{headers.map(renderHeaderTh)}</Tr>
-        )}
-      </thead>
-    )}
+export const Table = (props) => {
+  const { className, emptyMessage, outline, headers, rows, children } = props;
 
-    <tbody>
-      {rows.length > 0 &&
-        rows.map(
-          ({ className: rowCustomClassName, cells = [], header = '', key, ...rowProps }, index) => {
-            const rowKey = `row-${key || index}`;
+  const Wrappper = (wraperProps) => <table className={cx(className, css.root, outline && css.outline)} {...wraperProps} />
 
-            return (
-              <Tr className={rowCustomClassName} key={rowKey} {...rowProps}>
-                {header && renderHeaderTh(header)}
-                {cells.map((cell, cellIndex) => {
-                  const cellProps = {
-                    key: cell?.key || `${rowKey}-${cellIndex}`,
-                    ...getColumnAttributes(headers, !!header, cellIndex),
-                    ...(typeof cell === 'object' && !React.isValidElement(cell)
-                      ? cell
-                      : { children: cell }),
-                  };
+  if (children) {
+    return (
+      <Wrappper>
+        {children}
+      </Wrappper>
+    );
+  }
 
-                  return <Td {...cellProps} />;
-                })}
-              </Tr>
-            );
-          },
-        )}
-
-      {rows.length === 0 && (
+  if (rows.length === 0) {
+    return (
+      <Wrappper>
         <tr key="row-empty">
           <Td className={css.emptyData} colSpan={Array.isArray(headers[0]) ? headers[0].length : headers.length}>
             {emptyMessage}
           </Td>
         </tr>
+      </Wrappper>
+    );
+  }
+
+  return (
+    <table className={cx(className, css.root, outline && css.outline)}>
+      {headers?.length > 0 && (
+        <thead>
+          {Array.isArray(headers[0]) ? (
+            <>
+              {headers.map((header, index) => {
+                const key = `header-row-${index}`;
+                return (
+                  <Tr key={key}>{header.map(renderHeaderTh)}</Tr>
+                );
+              })}
+            </>
+          ) : (
+            <Tr key="header-row">{headers.map(renderHeaderTh)}</Tr>
+          )}
+        </thead>
       )}
-    </tbody>
-  </table>
-);
+
+      <tbody>
+        {rows.length > 0 &&
+            rows.map(
+              ({ className: rowCustomClassName, cells = [], header = '', key, ...rowProps }, index) => {
+                const rowKey = `row-${key || index}`;
+
+                return (
+                  <Tr className={rowCustomClassName} key={rowKey} {...rowProps}>
+                    {header && renderHeaderTh(header)}
+                    {cells.map((cell, cellIndex) => {
+                      const cellProps = {
+                        key: cell?.key || `${rowKey}-${cellIndex}`,
+                        ...getColumnAttributes(headers, !!header, cellIndex),
+                        ...(typeof cell === 'object' && !React.isValidElement(cell)
+                          ? cell
+                          : { children: cell }),
+                      };
+
+                      return <Td {...cellProps} />;
+                    })}
+                  </Tr>
+                );
+              },
+            )}
+      </tbody>
+    </table>
+  );
+};
 
 Table.defaultProps = {
   className: '',
