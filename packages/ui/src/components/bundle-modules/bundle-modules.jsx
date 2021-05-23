@@ -20,6 +20,7 @@ import { Filters } from '../../ui/filters';
 import { Popover } from '../../ui/popover';
 import { SortDropdown } from '../../ui/sort-dropdown';
 import { Toolbar } from '../../ui/toolbar';
+import { Table } from '../../ui/table';
 import { MetricsTable } from '../metrics-table';
 import { MetricsTableSearch } from '../metrics-table-search';
 import { MetricsTableOptions } from '../metrics-table-options';
@@ -188,22 +189,43 @@ export const BundleModules = ({
           />
         </FlexStack>
       </Toolbar>
-      <MetricsTable
-        className={css.table}
-        items={items}
-        runs={jobs}
-        renderRowHeader={renderRowHeader}
-        emptyMessage={emptyMessage}
-        showHeaderSum
-        title={
-          <MetricsTableTitle
-            title={I18N.MODULES}
-            info={`(${items.length}/${totalRowCount})`}
-            popoverInfo={I18N.MODULES_INFO}
-            popoverHref={config.documentation.modules}
-          />
-        }
-      />
+
+      <Table>
+        <thead>
+          <Table.Tr>
+            <Table.Th>
+              <MetricsTableTitle
+                title={I18N.MODULES}
+                info={`(${items.length}/${totalRowCount})`}
+                popoverInfo={I18N.MODULES_INFO}
+                popoverHref={config.documentation.modules}
+              />
+            </Table.Th>
+
+            {/** TODO: Add link & total */}
+            {jobs.map((job) => (
+              <Table.Th key={`header-${job.internalBuildNumber}`}>
+                {`Job #${job.internalBuildNumber}`}
+              </Table.Th>
+            ))}
+          </Table.Tr>
+        </thead>
+        <tbody>
+          {items.map((item) => (
+            <Table.Tr key={`row-${item.key}`}>
+              <Table.Th>
+                {item.label}
+              </Table.Th>
+              {item?.runs.map((itemRun) => (
+                <Table.Td>
+                  {itemRun?.displayValue}
+                </Table.Td>
+              ))}
+            </Table.Tr>
+          ))}
+        </tbody>
+      </Table>
+
     </div>
   );
 };
