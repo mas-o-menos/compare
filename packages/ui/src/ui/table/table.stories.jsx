@@ -7,26 +7,30 @@ import { Table } from '.';
 const stories = storiesOf('UI/Table', module);
 stories.addDecorator(getWrapperDecorator());
 
-stories.add('default', () => {
-  const rows = [
-    {
-      cells: ['a1', 'b1', 'c1'],
-    },
-    {
-      cells: ['a2', 'b2', 'c2'],
-    },
-    {
-      cells: ['a3', 'b3', 'c3'],
-    },
-  ];
-
-  return <Table rows={rows} />;
-});
-
-stories.add('empty', () => (
-  <Table rows={[]} />
+stories.add('default', () => (
+  <Table>
+    <tbody>
+      <Table.Tr>
+        <Table.Td>a1</Table.Td>
+        <Table.Td>b1</Table.Td>
+        <Table.Td>c1</Table.Td>
+      </Table.Tr>
+      <Table.Tr>
+        <Table.Td>a2</Table.Td>
+        <Table.Td>b2</Table.Td>
+        <Table.Td>c2</Table.Td>
+      </Table.Tr>
+      <Table.Tr>
+        <Table.Td>a3</Table.Td>
+        <Table.Td>b3</Table.Td>
+        <Table.Td>c3</Table.Td>
+      </Table.Tr>
+    </tbody>
+  </Table>
 ));
 
+// @TODO add specific prop
+stories.add('empty', () => <Table rows={[]} />);
 stories.add('empty with custom element', () => (
   <Table
     rows={[]}
@@ -38,131 +42,122 @@ stories.add('empty with custom element', () => (
   />
 ));
 
-stories.add('with headers', () => {
-  const headers = ['Col A', 'Col B', 'Col C'];
-  const rows = [
-    {
-      cells: ['a1', 'b1', 'c1'],
-    },
-    {
-      cells: ['a2', 'b2', 'c2'],
-    },
-    {
-      cells: ['a3', 'b3', 'c3'],
-    },
-  ];
+stories.add('with headers', () => (
+  <Table>
+    <thead>
+      <Table.Tr>
+        <Table.Th>Col A</Table.Th>
+        <Table.Th>Col B</Table.Th>
+        <Table.Th>Col C</Table.Th>
+      </Table.Tr>
+    </thead>
+    <tbody>
+      <Table.Tr>
+        <Table.Td>a1</Table.Td>
+        <Table.Td>b1</Table.Td>
+        <Table.Td>c1</Table.Td>
+      </Table.Tr>
+      <Table.Tr>
+        <Table.Td>a2</Table.Td>
+        <Table.Td>b2</Table.Td>
+        <Table.Td>c2</Table.Td>
+      </Table.Tr>
+      <Table.Tr>
+        <Table.Td>a3</Table.Td>
+        <Table.Td>b3</Table.Td>
+        <Table.Td>c3</Table.Td>
+      </Table.Tr>
+    </tbody>
+  </Table>
+));
 
-  return <Table headers={headers} rows={rows} />;
-});
+stories.add('with multiple rows header', () => (
+  <Table>
+    <thead>
+      <Table.Tr>
+        <Table.Th> </Table.Th>
+        <Table.Th colSpan={2}>Colspan</Table.Th>
+      </Table.Tr>
+      <Table.Tr>
+        <Table.Th>Col A</Table.Th>
+        <Table.Th>Col B</Table.Th>
+        <Table.Th>Col C</Table.Th>
+      </Table.Tr>
+    </thead>
+    <tbody>
+      <Table.Tr>
+        <Table.Td>a1</Table.Td>
+        <Table.Td>b1</Table.Td>
+        <Table.Td>c1</Table.Td>
+      </Table.Tr>
+      <Table.Tr>
+        <Table.Td>a2</Table.Td>
+        <Table.Td>b2</Table.Td>
+        <Table.Td>c2</Table.Td>
+      </Table.Tr>
+      <Table.Tr>
+        <Table.Td>a3</Table.Td>
+        <Table.Td>b3</Table.Td>
+        <Table.Td>c3</Table.Td>
+      </Table.Tr>
+    </tbody>
+  </Table>
+));
 
-stories.add('with multiple rows header', () => {
-  const headers = [
-    [' ', { children: 'Colspan', colSpan: 2 }],
-    ['Col A', 'Col B', 'Col C'],
-  ];
+stories.add('with row headers', () => (
+  <Table>
+    <tbody>
+      <Table.Tr>
+        <Table.Th>row 1</Table.Th>
+        <Table.Td>a1</Table.Td>
+        <Table.Td>b1</Table.Td>
+        <Table.Td>c1</Table.Td>
+      </Table.Tr>
+      <Table.Tr>
+        <Table.Th>row 2</Table.Th>
+        <Table.Td>a2</Table.Td>
+        <Table.Td>b2</Table.Td>
+        <Table.Td>c2</Table.Td>
+      </Table.Tr>
+      <Table.Tr>
+        <Table.Th>row 3</Table.Th>
+        <Table.Td>a3</Table.Td>
+        <Table.Td>b3</Table.Td>
+        <Table.Td>c3</Table.Td>
+      </Table.Tr>
+    </tbody>
+  </Table>
+));
 
-  const rows = [
-    {
-      cells: ['a1', 'b1', 'c1'],
-    },
-    {
-      cells: ['a2', 'b2', 'c2'],
-    },
-    {
-      cells: ['a3', 'b3', 'c3'],
-    },
-  ];
-
-  return <Table headers={headers} rows={rows} />;
-});
-
-stories.add('with outline', () => {
-  const headers = ['Col A', 'Col B', 'Col C'];
-  const rows = [
-    {
-      cells: ['a1', 'b1', 'c1'],
-    },
-    {
-      cells: ['a2', 'b2', 'c2'],
-    },
-    {
-      cells: ['a3', 'b3', 'c3'],
-    },
-  ];
-
-  return <Table outline headers={headers} rows={rows} />;
-});
-
-
-stories.add('with row headers', () => {
-  const rows = [
-    {
-      header: 'row 1',
-      cells: ['a1', 'b1', 'c1'],
-    },
-    {
-      header: 'row 2',
-      cells: ['a2', 'b2', 'c2'],
-    },
-    {
-      header: 'row 3',
-      cells: ['a3', 'b3', 'c3'],
-    },
-  ];
-
-  return <Table rows={rows} />;
-});
-
-stories.add('with custom content and attributes', () => {
-  const headers = [
-    ' ',
-    {
-      children: 'Col A (right)',
-      style: {
-        textAlign: 'right',
-      },
-    },
-    {
-      children: 'Col B (center)',
-      style: {
-        textAlign: 'center',
-      },
-    },
-    {
-      children: 'Col C (underline)',
-      style: {
-        textDecoration: 'underline',
-      },
-    },
-  ];
-  const rows = [
-    {
-      header: (<strong>row 1</strong>),
-      cells: [
-        (<em>a1</em>),
-        {
-          children: 'b1',
-          style: {
-            color: 'red',
-            textAlign: 'center',
-          },
-        },
-        'c1',
-      ],
-    },
-    {
-      style: {
-        color: 'blue',
-        fontSize: '1.5em',
-      },
-      header: (<strong>row 2</strong>),
-      cells: ['a2', 'b2', 'c2'],
-    },
-    {
-      header: (<strong>row 2</strong>),
-      cells: ['a3', 'b3', 'c3'],
-    },
-  ];
-
-  return <Table headers={headers} rows={rows} />;
-});
+stories.add('with custom content and attributes', () => (
+  <Table>
+    <thead>
+      <Table.Tr>
+        <Table.Th> </Table.Th>
+        <Table.Th style={{ textAlign: 'right' }}>Col A (right)</Table.Th>
+        <Table.Th style={{ textAlign: 'center' }}>Col B (center)</Table.Th>
+        <Table.Th style={{ textDecoration: 'underline' }}>Col C(undefiner)</Table.Th>
+      </Table.Tr>
+    </thead>
+    <tbody>
+      <Table.Tr>
+        <Table.Th><strong>row 1</strong></Table.Th>
+        <Table.Td style={{ textAlign: 'right' }}>a1</Table.Td>
+        <Table.Td style={{ textAlign: 'center', color: 'red' }}>b1</Table.Td>
+        <Table.Td style={{ textDecoration: 'underline' }}>c1</Table.Td>
+      </Table.Tr>
+      <Table.Tr style={{ color: 'blue', fontSize: '1.5em' }}>
+        <Table.Th><strong>row 2</strong></Table.Th>
+        <Table.Td style={{ textAlign: 'right' }}>a2</Table.Td>
+        <Table.Td style={{ textAlign: 'center'}}>b2</Table.Td>
+        <Table.Td style={{ textDecoration: 'underline' }}>c2</Table.Td>
+      </Table.Tr>
+      <Table.Tr>
+        <Table.Th><strong>row 3</strong></Table.Th>
+        <Table.Td style={{ textAlign: 'right' }}>a3</Table.Td>
+        <Table.Td style={{ textAlign: 'center'}}>b3</Table.Td>
+        <Table.Td style={{ textDecoration: 'underline' }}>c3</Table.Td>
+      </Table.Tr>
+    </tbody>
+  </Table>
+));
