@@ -75,65 +75,74 @@ const renderHeaderTh = (header, index) => {
   return <Th {...headerProps} />;
 };
 
-export const Table = ({ className, emptyMessage, outline, headers, rows }) => (
-  <table className={cx(className, css.root, outline && css.outline)}>
-    {headers?.length > 0 && (
-      <thead>
-        {Array.isArray(headers[0]) ? (
-          <>
-            {headers.map((header, index) => {
-              const key = `header-row-${index}`;
-              return (
-                <Tr key={key}>{header.map(renderHeaderTh)}</Tr>
-              );
-            })}
-          </>
-        ) : (
-          <Tr key="header-row">{headers.map(renderHeaderTh)}</Tr>
-        )}
-      </thead>
-    )}
+export const Table = ({ className, emptyMessage, headers, rows, children }) => {
+  if (children) {
+    return <table className={cx(css.root, className)}>{children}</table>;
+  }
 
-    <tbody>
-      {rows.length > 0 &&
-        rows.map(
-          ({ className: rowCustomClassName, cells = [], header = '', key, ...rowProps }, index) => {
-            const rowKey = `row-${key || index}`;
-
-            return (
-              <Tr className={rowCustomClassName} key={rowKey} {...rowProps}>
-                {header && renderHeaderTh(header)}
-                {cells.map((cell, cellIndex) => {
-                  const cellProps = {
-                    key: cell?.key || `${rowKey}-${cellIndex}`,
-                    ...getColumnAttributes(headers, !!header, cellIndex),
-                    ...(typeof cell === 'object' && !React.isValidElement(cell)
-                      ? cell
-                      : { children: cell }),
-                  };
-
-                  return <Td {...cellProps} />;
-                })}
-              </Tr>
-            );
-          },
-        )}
-
-      {rows.length === 0 && (
-        <tr key="row-empty">
-          <Td className={css.emptyData} colSpan={Array.isArray(headers[0]) ? headers[0].length : headers.length}>
-            {emptyMessage}
-          </Td>
-        </tr>
+  return (
+    <table className={cx(css.root, className)}>
+      {headers?.length > 0 && (
+        <thead>
+          {Array.isArray(headers[0]) ? (
+            <>
+              {headers.map((header, index) => {
+                const key = `header-row-${index}`;
+                return (
+                  <Tr key={key}>{header.map(renderHeaderTh)}</Tr>
+                );
+              })}
+            </>
+          ) : (
+            <Tr key="header-row">{headers.map(renderHeaderTh)}</Tr>
+          )}
+        </thead>
       )}
-    </tbody>
-  </table>
-);
+
+      <tbody>
+        {rows.length > 0 &&
+            rows.map(
+              ({ className: rowCustomClassName, cells = [], header = '', key, ...rowProps }, index) => {
+                const rowKey = `row-${key || index}`;
+
+                return (
+                  <Tr className={rowCustomClassName} key={rowKey} {...rowProps}>
+                    {header && renderHeaderTh(header)}
+                    {cells.map((cell, cellIndex) => {
+                      const cellProps = {
+                        key: cell?.key || `${rowKey}-${cellIndex}`,
+                        ...getColumnAttributes(headers, !!header, cellIndex),
+                        ...(typeof cell === 'object' && !React.isValidElement(cell)
+                          ? cell
+                          : { children: cell }),
+                      };
+
+                      return <Td {...cellProps} />;
+                    })}
+                  </Tr>
+                );
+              },
+            )}
+
+        {rows.length === 0 && (
+          <tr key="row-empty">
+            <Td className={css.emptyData} colSpan={Array.isArray(headers[0]) ? headers[0].length : headers.length}>
+              {emptyMessage}
+            </Td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  );
+};
+
+Table.Th = Th;
+Table.Tr = Tr;
+Table.Td = Td;
 
 Table.defaultProps = {
   className: '',
   emptyMessage: 'No entries found.',
-  outline: false,
   headers: [],
   rows: [],
 };
@@ -141,7 +150,6 @@ Table.defaultProps = {
 Table.propTypes = {
   className: PropTypes.string,
   emptyMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
-  outline: PropTypes.bool,
   headers: PropTypes.array, // eslint-disable-line react/forbid-prop-types
   rows: PropTypes.array, // eslint-disable-line react/forbid-prop-types
 };
